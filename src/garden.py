@@ -8,7 +8,7 @@ from .options import *
 class Garden():
     def __init__(self):
         self.size = (60, 60)
-        self.grid = 60
+        self.grid = TILE_SIZE
         self.diff = 30
         self.rowgrid = WIDTH // self.grid
         self.colgrid = HEIGHT // self.grid
@@ -55,7 +55,7 @@ class Garden():
                 self.field[y][x] = 1
     
     def collide(self, lawn_mower): 
-        return lawn_mower.collidelist(self.hurdles) #Projectile klassen hjalp :^) 
+        return lawn_mower.rect.collidelist(self.hurdles) #Projectile klassen hjalp :^) 
                                                     #must use Rect, also should be in grid units
     
     def _fill(self): #setup seq
