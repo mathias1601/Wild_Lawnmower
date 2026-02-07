@@ -10,8 +10,8 @@ class Garden():
         self.size = (60, 60)
         self.grid = 60
         self.diff = 30
-        self.rowgrid = 1200 
-        self.colgrid = 660 
+        self.rowgrid = 1200 // self.grid
+        self.colgrid = 660 // self.grid
         self.hurdle_image = HURDLE_IMAGE
 
         self.last_enemy = []
@@ -22,8 +22,8 @@ class Garden():
     def _generate_hurdles(self):  #setup seq 
         hurdles = []
         for _ in range(self.diff):
-            posx = random.randint(0, self.rowgrid//self.grid  - 1)
-            posy = random.randint(0, self.colgrid//self.grid  - 1)
+            posx = random.randint(0, self.rowgrid - 1)
+            posy = random.randint(0, self.colgrid - 1)
             hurdle = pygame.Rect(posx, posy, 1, 1) #Projectile klassen hjalp :^)
 
             if hurdle.collidelist(hurdles) == -1: #søkte opp
@@ -33,8 +33,8 @@ class Garden():
     def generate_enemy(self): 
         update = 0
         while(not update):
-            posx = random.randint(0, self.rowgrid//self.grid  - 1)
-            posy = random.randint(0, self.colgrid//self.grid  - 1)
+            posx = random.randint(0, self.rowgrid - 1)
+            posy = random.randint(0, self.colgrid - 1) 
             lil_enemy = pygame.Rect(posx, posy, 1, 1)
             if (lil_enemy.collidelist(self.last_enemy) == -1 and lil_enemy.collidelist(self.hurdles) == -1):
                 update = 1
@@ -80,12 +80,10 @@ class Garden():
         self.field[6][-1] = 1
 
     def draw(self, screen):
-        for y, row in enumerate(self.field): 
-            for x, elem in enumerate(row):
-                cell = pygame.Rect(x,y,1,1)
-                proj = self.transform(cell)
-                if elem == 0: 
-                    screen.blit(self.hurdle_image, proj)
+        screen.blit(BACKGROUND_IMAGE, (0, 0))
+        for h in self.hurdles:
+                proj = self.transform(h)
+                screen.blit(self.hurdle_image, proj)
 
 # def run(): #testbenk fra GPT
 #     pygame.init()

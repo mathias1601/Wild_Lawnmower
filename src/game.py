@@ -34,8 +34,6 @@ def run(screen):
 
     # function to draw everything
     def draw_frame():
-
-        screen.blit(BACKGROUND_IMAGE, (0, 0))
         garden.draw(screen)
 
         for projectile in projectiles:
