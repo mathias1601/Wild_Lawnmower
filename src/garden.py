@@ -1,7 +1,7 @@
 import pygame
 import random
 from .assets import *
-#from .options import *
+from .options import *
 
 #gjerder, generer steiner, generer gress, gjerdet er ødelagt der man kan gå til neste bane
 
@@ -10,8 +10,8 @@ class Garden():
         self.size = (60, 60)
         self.grid = 60
         self.diff = 30
-        self.rowgrid = 1200 // self.grid
-        self.colgrid = 660 // self.grid
+        self.rowgrid = WIDTH // self.grid
+        self.colgrid = HEIGHT // self.grid
         self.hurdle_image = HURDLE_IMAGE
 
         self.last_enemy = []
