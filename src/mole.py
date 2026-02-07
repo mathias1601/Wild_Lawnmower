@@ -3,6 +3,8 @@ import random
 from Projectile import Projectile
 from Garden import Garden
 
+from options import *
+
 #SNEILESKOOOOOOO
 class Mole():
     def __init__(self, garden):
@@ -11,21 +13,18 @@ class Mole():
         self.rect = garden.generate_enemy()
         self.counter = 0
         self.pause = 5 #seconds
-        self.amount = 3
-        self.peekabo = pygame.transform.scale(pygame.image.load("src/mole.png").convert_alpha(),
-                                                  self.size)
-        self.throw = pygame.transform.scale(pygame.image.load("src/mole_throw.png").convert_alpha(),
-                                                  self.size)
-        self.death = pygame.transform.scale(pygame.image.load("src/mole_dead.png").convert_alpha(),
-                                                  self.size)
+        self.peekabo = pygame.transform.scale(pygame.image.load("src/mole.png").convert_alpha(), self.size)
+        self.throw = pygame.transform.scale(pygame.image.load("src/mole_throw.png").convert_alpha(), self.size)
+        self.death = pygame.transform.scale(pygame.image.load("src/mole_dead.png").convert_alpha(), self.size)
         self.projectile = []
 
     def _throw_projectile(self, lawnmower_x, lawnmower_y):
-        distance = (lawnmower_x - self.x, lawnmower_y - self.y)
-        x = self.rect.centerx
-        y = self.rect.top
-        snailshoe = Projectile(x,y)
+        x,y = (lawnmower_x - self.x, lawnmower_y - self.y)
+        vx = x//FRAMERATE
+        vy = y//FRAMERATE
+        snailshoe = Projectile(self.x,self.y, vx, vy)
         self.projectile.append(snailshoe)
+        return snailshoe
 
     def _throw_and_wait(self):
         self.throw_projectile()
@@ -35,10 +34,6 @@ class Mole():
 
     def collision_w_lawnmower(self, lawnmower):
         return self.rect.colliderect(lawnmower)
-    
-    def update(self): 
-        status = self._throw_and_wait()
-        
-        
+           
     def draw(self, screen):
         pass
