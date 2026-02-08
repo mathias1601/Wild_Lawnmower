@@ -8,25 +8,22 @@ from .options import *
 #gjerder, generer steiner, generer gress, gjerdet er ødelagt der man kan gå til neste bane
 
 class Garden():
-    def __init__(self):
-        self.size = (60, 60)
-        self.grid = TILE_SIZE
+    def __init__(self, p1):
         self.rock_count = ROCK_COUNT
-        self.rowgrid = WIDTH // self.grid
-        self.colgrid = HEIGHT // self.grid
         self.hurdle_image = HURDLE_IMAGE
+        self.hurdle_size = (TILE_SIZE, TILE_SIZE)
 
         self.moles = []
         self.hurdles = self._generate_hurdles()
-        self.field = self._fill() #hvert element tilsvarer 60x60 blokker
-        self._fill_in_hurdles()
+
+        self.p1 = p1
     
     def _generate_hurdles(self):  #setup seq 
         hurdles = []
         for _ in range(self.rock_count):
-            posx = random.randint(1, self.rowgrid - 2)
-            posy = random.randint(1, self.colgrid - 2)
-            hurdle = pygame.Rect(posx, posy, 1, 1) #Projectile klassen hjalp :^)
+            posx = random.randint(0, WIDTH - self.hurdle_size[0])
+            posy = random.randint(0, HEIGHT - self.hurdle_size[1])
+            hurdle = pygame.Rect(posx, posy, self.hurdle_size[0], self.hurdle_size[1])
 
             if hurdle.collidelist(hurdles) == -1: #søkte opp
                 hurdles.append(hurdle)
@@ -35,89 +32,30 @@ class Garden():
     def generate_enemy(self): 
         spaceOccupied = True
         while spaceOccupied:
-            posx = random.randint(0, self.rowgrid - 1)
-            posy = random.randint(0, self.colgrid - 1) 
-            lil_enemy = pygame.Rect(posx, posy, 1, 1)
+            posx = random.randint(0, WIDTH - TILE_SIZE)
+            posy = random.randint(0, HEIGHT - TILE_SIZE)
+            lil_enemy = pygame.Rect(posx, posy, TILE_SIZE, TILE_SIZE)
 
-            if (lil_enemy.collidelist(self.hurdles) == -1):
-                spaceOccupied = False
-                
+            if lil_enemy.collidelist(self.hurdles) != -1:
                 continue
-            
+
             spaceOccupied = False
-
             for mole in self.moles:
-                if mole.rect.colliderect(lil_enemy) != -1:
-                     spaceOccupied = True
+                if mole.rect.colliderect(lil_enemy):
+                    spaceOccupied = True
+                    break
 
-        self.moles.append(Mole(self, pygame.Rect(posx, posy, 1, 1)))
-    
-    def add_enemy(self): #button press to avoid enemy attack? ... don't use before enemy is made
-        x, y = self.last_enemy[0].left, self.last_enemy[0].top 
-        if self.field[y][x] == 1: 
-                self.field[y][x] = 2 #enemy = 2
-
-    def remove_enemy(self): # ... don't use before enemy is made
-        x, y = self.last_enemy[0].left, self.last_enemy[0].top 
-        if self.field[y][x] == 2: 
-                self.field[y][x] = 1
+        self.moles.append(Mole(self, pygame.Rect(posx, posy, TILE_SIZE, TILE_SIZE), self.p1))
     
     def collide(self, lawn_mower): 
-        pixel_hurdles = [self.transform(h) for h in self.hurdles]
-        return lawn_mower.rect.collidelist(pixel_hurdles)
-    
-    def _fill(self): #setup seq
-        field = []
-        for _ in range(self.colgrid):
-            temp = [1]*self.rowgrid
-            field.append(temp)
-        return field
-
-    def _fill_in_hurdles(self): #setup seq
-        for elem in self.hurdles: 
-            x, y = elem.left, elem.top
-            if self.field[y][x] == 1: 
-                self.field[y][x] = 0 #stein = 0
-
-    def transform(self, rect): #transform grid positions to screen
-        return pygame.Rect(rect.left*self.grid - 15, rect.top*self.grid - 15, 
-                           rect.width*self.grid - 15, rect.height*self.grid - 15)
-    
-    def advance_lvl(self):
-        self.field[5][-1] = 1
-        self.field[6][-1] = 1
+        return lawn_mower.rect.collidelist(self.hurdles)
 
     def draw(self, screen):
         screen.blit(BACKGROUND_IMAGE, (0, 0))
         for h in self.hurdles:
-                proj = self.transform(h)
-                screen.blit(self.hurdle_image, proj)
+            screen.blit(self.hurdle_image, h)
 
         for mole in self.moles:
             mole.draw(screen)
-
-# def run(): #testbenk fra GPT
-#     pygame.init()
-
-#     screen = pygame.display.set_mode((1200, 660))
-#     pygame.display.set_caption("Garden Test")
-
-#     clock = pygame.time.Clock()
-#     garden = Garden()
-
-#     running = True
-#     while running:
-#         for event in pygame.event.get():
-#             if event.type == pygame.QUIT:
-#                 running = False
-
-#         screen.fill((0, 0, 0))
-#         garden.draw(screen)
-#         pygame.display.flip()
-#         clock.tick(60)
-
-#     pygame.quit()
-
-# run()
 
         

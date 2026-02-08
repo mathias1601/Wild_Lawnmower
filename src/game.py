@@ -21,11 +21,12 @@ def run(screen):
     pygame.mixer.music.play(-1)  # Loop the soundtrack indefinitely
 
     # Game objects
-    garden = Garden()
 
     p1 = Player()
     projectiles = []
     cut_grass = set()
+    
+    garden = Garden(p1)
 
     score = 0
 
