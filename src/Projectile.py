@@ -1,7 +1,7 @@
 import pygame
 from .options import *
 from .Garden import Garden
-from assets.sneileskooo import sneilesko_u_bg
+from .assets import SNEILESKO
 class Projectile:
     def __init__(self, x, y, vx, vy, garden):
         self.garden = garden
