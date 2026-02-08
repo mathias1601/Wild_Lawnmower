@@ -98,7 +98,10 @@ def run(screen):
         # Pause menu
         if keys[pygame.K_ESCAPE]:
                 pause_start = pygame.time.get_ticks()
-                pause_menu.run()
+                pause_menu_result = pause_menu.run()
+                if pause_menu_result != True:
+                    quit_requested = True
+                    running = False
                 pause_end = pygame.time.get_ticks()
 
                 paused_time += pause_end - pause_start   
