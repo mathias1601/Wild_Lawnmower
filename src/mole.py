@@ -2,6 +2,7 @@ import pygame
 import random
 from Projectile import Projectile
 from Garden import Garden
+from assets.mole import * 
 
 from options import *
 
