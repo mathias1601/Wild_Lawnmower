@@ -1,5 +1,7 @@
 import pygame
 import random
+
+from src.mole import Mole
 from .assets import *
 from .options import *
 
@@ -14,7 +16,7 @@ class Garden():
         self.colgrid = HEIGHT // self.grid
         self.hurdle_image = HURDLE_IMAGE
 
-        self.last_enemy = []
+        self.moles = []
         self.hurdles = self._generate_hurdles()
         self.field = self._fill() #hvert element tilsvarer 60x60 blokker
         self._fill_in_hurdles()
@@ -31,18 +33,24 @@ class Garden():
         return hurdles
         
     def generate_enemy(self): 
-        update = 0
-        while(not update):
+        spaceOccupied = True
+        while spaceOccupied:
             posx = random.randint(0, self.rowgrid - 1)
             posy = random.randint(0, self.colgrid - 1) 
             lil_enemy = pygame.Rect(posx, posy, 1, 1)
-            if (lil_enemy.collidelist(self.last_enemy) == -1 and lil_enemy.collidelist(self.hurdles) == -1):
-                update = 1
-                if len(self.last_enemy) == 0: 
-                    self.last_enemy.append(lil_enemy)
-                    continue
-                self.last_enemy[0] = lil_enemy
-        return lil_enemy
+
+            if (lil_enemy.collidelist(self.hurdles) == -1):
+                spaceOccupied = False
+                
+                continue
+            
+            spaceOccupied = False
+
+            for mole in self.moles:
+                if mole.rect.colliderect(lil_enemy) != -1:
+                     spaceOccupied = True
+
+        self.moles.append(Mole(self, pygame.Rect(posx, posy, 1, 1)))
     
     def add_enemy(self): #button press to avoid enemy attack? ... don't use before enemy is made
         x, y = self.last_enemy[0].left, self.last_enemy[0].top 
@@ -84,6 +92,9 @@ class Garden():
         for h in self.hurdles:
                 proj = self.transform(h)
                 screen.blit(self.hurdle_image, proj)
+
+        for mole in self.moles:
+            mole.draw(screen)
 
 # def run(): #testbenk fra GPT
 #     pygame.init()
