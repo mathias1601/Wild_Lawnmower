@@ -9,6 +9,12 @@ from options import *
 
 #SNEILESKOOOOOOO
 class Mole():
+    IDLE = "idle"
+    WAKEY = "wakey"
+    AGGRESSION = "aggression"
+    DEFEAT = "defeat"
+    ANGER = "anger"
+    
     def __init__(self, garden):
         self.garden = garden
         self.size = (60,60)
@@ -17,43 +23,93 @@ class Mole():
 
         self.pause = 5 #seconds
         self.counter = 0
-        self.mode = 0
-        self.spawn = pygame.transform.scale(pygame.image.load("spawn_alert.png").convert_alpha(), self.size)
-        self.peekabo = pygame.transform.scale(pygame.image.load("mole.png").convert_alpha(), self.size)
-        self.throw = pygame.transform.scale(pygame.image.load("throw.png").convert_alpha(), self.size)
-        self.crushed = pygame.transform.scale(pygame.image.load("destroyed.png").convert_alpha(), self.size)
-        self.angry = pygame.transform.scale(pygame.image.load("angry.png").convert_alpha(), self.size)
-        self.active = self.spawn
+        self.state = Mole.IDLE
+        self.rounds = 2
+
+        self.img = {Mole.IDLE: pygame.image.load("spawn_alert.png"), 
+                    Mole.WAKEY: pygame.image.load("mole.png"),
+                    Mole.AGGRESSION: pygame.image.load("throw.png"),
+                    Mole.DEFEAT: pygame.image.load("destroyed.png"),
+                    Mole.ANGER: pygame.image.load("angry.png")}
+
+        self.flip = True
         self.projectile = []
+        self.state_trans = 0.0
+        self.throw_time = 3.0
+
+    def _load(self, img):
+        s = pygame.image.load(img).convert_alpha()  
+        return pygame.transform.smoothscale(s, self.size)
+
+    def turn(self, lawnmower):
+        if lawnmower.rect.centerx < self.rect.centerx: 
+            self.flip = False
+        else:
+            self.flip = True
+
+    def collision_w_lawnmower(self, lawnmower):
+        return self.rect.colliderect(lawnmower.rect)
+
+    def next_state_logic(self, next_state):
+        if next_state != self.state: 
+            self.state = next_state
+            self.state_trans = 0.0
+
+    def check_collision(self, lawnmower):
+        return self.rect.colliderect(lawnmower.rect)
 
     def _throw_projectile(self, lawnmower_cx, lawnmower_cy):
         x,y = (lawnmower_cx - self.rect.centerx, lawnmower_cy - self.rect.centery)
-        vx = x/FRAMERATE
-        vy = y/FRAMERATE
+        speed = 80
+        vx = x/FRAMERATE * speed
+        vy = y/FRAMERATE * speed
         snailshoe = Projectile(self.rect.centerx, self.rect.centery, vx, vy, self.garden)
-        self.projectile.append(snailshoe)
+        self.projectiles.append(snailshoe)
         return snailshoe
 
-    def _throw_and_wait(self, lawnmower_rect, dt):
-        self.counter -= dt
-        if self.counter <= 0:
-            self._throw_projectile(lawnmower_rect.centerx, lawnmower_rect.centery)
-            self.counter = self.pause
+    # def _throw_and_wait(self, lawnmower_rect, dt):
+    #     self.counter -= dt
+    #     if self.counter <= 0:
+    #         self._throw_projectile(lawnmower_rect.centerx, lawnmower_rect.centery)
+    #         self.counter = self.pause
 
-    def turn(self, lawnmower):
-        if lawnmower.rect.left < self.rect.centerx: 
-            pygame.transform.flip()
+    def process(self, dt, limit, lawnmower): #repeatedly called in main
+        self.state_trans += dt
+        self.turn(lawnmower)  
+        if(self.collision_w_lawnmower(lawnmower) and self.state not in (Mole.DEFEAT, Mole.ANGER)):
+            self.next_state_logic(Mole.DEFEAT)
+            self.state_trans = 0.0
 
-    def collision_w_lawnmower(self, lawnmower):
-        return self.rect.colliderect(lawnmower)
+        if self.state == Mole.IDLE and self.state_trans >= 1: 
+            self.next_state_logic(Mole.WAKEY)
+
+        elif self.state == Mole.WAKEY:
+            self.throw_time -= dt
+            if self.throw_time <= 0 and self.rounds > 0:
+                self.next_state_logic(Mole.AGGRESSION)
+                self.rounds -= 1
+
+        elif self.state == Mole.DEFEAT: 
+            if self.state_trans >= 2: 
+                self.next_state_logic(Mole.ANGER)
+        
+        elif self.state == Mole.AGGRESSION: 
+            self.throw_time = 3.0
+            if len(self.projectile) < 2: 
+                self._throw_projectile(self, lawnmower.rect.x, lawnmower.rect.y)
+                
+
+
+
+            
+
+
 
     def draw(self, screen):
-        if self.mode == 0: 
-            self.active = self.spawn
-            self.mode = 1
-        elif self.mode == 1: 
-            self.active = self.peekabo
-            self.mode = 1
-        elif self.mode == 2: 
-            self.active = self.throw
-            screen.blit(self.active, self.garden.transform(self.rect))
+        img = self.img[self.state]
+        if not self.flip: 
+            pygame.transform.flip(img, True, False)
+        screen.blit(img, self.garden.transform(self.rect))
+
+        for p in self.projectile:
+            p.draw(screen)

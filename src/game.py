@@ -1,5 +1,6 @@
 """ Hovedprogrammet som skal kjores """
 import pygame
+from src.pause_menu import PauseMenu
 
 from .options import *
 
@@ -27,6 +28,10 @@ def run(screen):
     cut_grass = set()
 
     score = 0
+
+    # Pause menu
+    pause_menu = PauseMenu(screen)
+    paused_time = 0
 
     direction = pygame.Vector2(0, -1)
     last_move_pos = (p1.x, p1.y)
@@ -65,7 +70,7 @@ def run(screen):
 
     while running:
         dt = clock.tick(FRAMERATE) / 1000
-        current_time = pygame.time.get_ticks()
+        current_time = pygame.time.get_ticks() - paused_time
 
         # Handle events
         for event in pygame.event.get():
@@ -89,6 +94,18 @@ def run(screen):
             input_dir.y -= 1
         if keys[pygame.K_s]:
             input_dir.y += 1
+
+        # Pause menu
+        if keys[pygame.K_ESCAPE]:
+                pause_start = pygame.time.get_ticks()
+                pause_menu.run()
+                pause_end = pygame.time.get_ticks()
+
+                paused_time += pause_end - pause_start   
+                clock.tick()                             
+                continue 
+        
+                
 
         # Normalize move
         if input_dir.length_squared() > 0:
