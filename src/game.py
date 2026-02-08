@@ -5,7 +5,7 @@ from .options import *
 
 
 def run(screen):
-    from .assets import SOUNDTRACK, DEATH_SOUND
+    from .assets import SOUNDTRACK, DEATH_SOUND, DAMAGE_SOUND, BACKGROUND_IMAGE, CUT_GRASS, GRASS, ROCK
     from .Player import Player
     from .Garden import Garden
     from .Projectile import Projectile
@@ -41,8 +41,8 @@ def run(screen):
 
         # Update grass
         for cut_grass_position in cut_grass:
-            pygame.draw.rect(screen, DARK_GREEN, pygame.Rect(cut_grass_position[0], cut_grass_position[1], 64, 64))
-            # TODO Cut grass texture
+            screen.blit(CUT_GRASS, (cut_grass_position[0], cut_grass_position[1]))
+
         
         p1.draw(direction, screen)
 
