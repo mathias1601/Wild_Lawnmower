@@ -19,14 +19,16 @@ class Player:
         self.hp = HP
 
     def draw(self, direction, screen):
-
         # Rotate the image based on the direction
-        # Use up or down if diagonal
+        # rotate MOWER_LEFT or MOWER_RIGHT when moving diagonally
+
         if direction.x != 0 and direction.y != 0:
-            if direction.y < 0:
-                self.image = MOWER_UP
-            else:
-                self.image = MOWER_DOWN
+            if direction.x < 0:
+                angle = 45 if direction.y > 0 else -45
+                self.image = pygame.transform.rotate(MOWER_LEFT, angle)
+            elif direction.x > 0:
+                angle = -45 if direction.y > 0 else 45
+                self.image = pygame.transform.rotate(MOWER_RIGHT, angle)
         else:
             if direction.x > 0:
                 self.image = MOWER_RIGHT
@@ -38,5 +40,6 @@ class Player:
                 self.image = MOWER_DOWN
 
         self.rect = pygame.Rect(self.x, self.y, self.size[0], self.size[1])
-        screen.blit(self.image, self.rect)
 
+        rotated_rect = self.image.get_rect(center=(self.x + self.size[0] // 2, self.y + self.size[1] // 2))
+        screen.blit(self.image, rotated_rect)
