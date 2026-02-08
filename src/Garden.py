@@ -55,8 +55,8 @@ class Garden():
                 self.field[y][x] = 1
     
     def collide(self, lawn_mower): 
-        return lawn_mower.rect.collidelist(self.hurdles) #Projectile klassen hjalp :^) 
-                                                    #must use Rect, also should be in grid units
+        pixel_hurdles = [self.transform(h) for h in self.hurdles]
+        return lawn_mower.rect.collidelist(pixel_hurdles)
     
     def _fill(self): #setup seq
         field = []
@@ -72,8 +72,8 @@ class Garden():
                 self.field[y][x] = 0 #stein = 0
 
     def transform(self, rect): #transform grid positions to screen
-        return pygame.Rect(rect.left*self.grid, rect.top*self.grid, 
-                           rect.width*self.grid, rect.height*self.grid)
+        return pygame.Rect(rect.left*self.grid - 15, rect.top*self.grid - 15, 
+                           rect.width*self.grid - 15, rect.height*self.grid - 15)
     
     def advance_lvl(self):
         self.field[5][-1] = 1
