@@ -12,7 +12,8 @@ class Player:
         self.color = BLUE
         self.image = pygame.transform.scale(MOWER_IMAGE, self.size)
         self.speed = PLAYER_SPEED
-
+        self.length = 1000 
+        self.rect = pygame.Rect(self.x, self.y, self.size[0], self.size[1])
 
         self.regeneration_rate = REGENERATION_RATE
         self.hp = HP
@@ -22,6 +23,6 @@ class Player:
         # Rotate the image based on the direction
         angle = direction.angle_to(pygame.Vector2(0, -1))
         rotated_image = pygame.transform.rotate(self.image, angle)
-        rotated_rect = rotated_image.get_rect(center=(self.x + self.size[0] // 2, self.y + self.size[1] // 2))
-        screen.blit(rotated_image, rotated_rect)
+        self.rect = pygame.Rect(self.x, self.y, self.size[0], self.size[1])
+        screen.blit(rotated_image, self.rect)
 

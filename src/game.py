@@ -96,8 +96,22 @@ def run(screen):
             direction = input_dir
 
         # Move player
+
+        # Move X
         p1.x += direction.x * p1.speed * dt
+        p1.rect.topleft = (p1.x, p1.y)
+
+        if garden.collide(p1) != -1:
+            p1.x = lastX
+            p1.rect.topleft = (p1.x, p1.y)
+
+        # Move Y
         p1.y += direction.y * p1.speed * dt
+        p1.rect.topleft = (p1.x, p1.y)
+
+        if garden.collide(p1) != -1:
+            p1.y = lastY
+            p1.rect.topleft = (p1.x, p1.y)
 
         # Keep in bounds
         p1.x = max(0, min(WIDTH - p1.size[0], p1.x))
@@ -121,16 +135,16 @@ def run(screen):
 
         for cut_grass_position in cut_grass:
             # Remove old cut grass
-            if current_time - cut_grass_position[2] > 5000:  # Grass regrows after 5 seconds
+            if current_time - cut_grass_position[2] > p1.length:  # Grass regrows after 5 seconds
                 old_cut_grass.add(cut_grass_position)
                 continue
             if current_time - cut_grass_position[2] < 300:  # skip damage for 1 second after cutting
                 continue
 
             grass_rect = pygame.Rect(cut_grass_position[0], cut_grass_position[1], TILE_SIZE, TILE_SIZE)
-            player_rect = pygame.Rect(p1.x, p1.y, p1.size[0], p1.size[1])
-            if grass_rect.colliderect(player_rect):
-                overlap_area = grass_rect.clip(player_rect).width * grass_rect.clip(player_rect).height
+            
+            if grass_rect.colliderect(p1.rect):
+                overlap_area = grass_rect.clip(p1.rect).width * grass_rect.clip(p1.rect).height
                 damage = overlap_area / (p1.size[0] * p1.size[1]) * 20 * dt  # Max 20 damage per second
                 p1.hp -= damage
                 if p1.hp <= 0:
@@ -145,6 +159,9 @@ def run(screen):
         for cut_grass_position in old_cut_grass:
             cut_grass.remove(cut_grass_position)
 
+        # Slowly increase the amount of grass cut by increasing length
+        p1.length += 3
+        
 
         # Update display
         draw_frame()
@@ -156,7 +173,6 @@ def run(screen):
     if died:
         return "menu"
     return "menu"
-
 
 if __name__ == "__main__":
     pygame.init()
