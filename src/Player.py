@@ -10,7 +10,7 @@ class Player:
         self.y = 640
         self.size = (PLAYER_SIZE, PLAYER_SIZE)
         self.color = BLUE
-        self.image = pygame.transform.scale(ROCKET_IMAGE, self.size)
+        self.image = pygame.transform.scale(MOWER_IMAGE, self.size)
         self.speed = PLAYER_SPEED
 
 

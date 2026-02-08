@@ -4,7 +4,7 @@ from os import path
 from .options import *
 
 # -----| IMAGES |-----
-ROCKET_IMAGE = pygame.image.load(path.join('assets', 'rocket.png')).convert_alpha()
+MOWER_IMAGE = pygame.image.load(path.join('assets', 'mower.png')).convert_alpha()
 
 HURDLE_IMAGE = pygame.image.load(path.join('assets', 'hurdle.png')).convert_alpha()
 
