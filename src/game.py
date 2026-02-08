@@ -138,7 +138,7 @@ def run(screen):
 
 
                     # Play death sound
-                    pygame.mixer.Sound("src/death.wav").play()
+                    DEATH_SOUND.play()
                     running = False
 
 
