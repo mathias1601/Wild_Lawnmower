@@ -22,19 +22,19 @@ class Garden():
         hurdles = []
         for _ in range(self.rock_count):
             posx = random.randint(0, WIDTH - self.hurdle_size[0])
-            posy = random.randint(0, HEIGHT - self.hurdle_size[1])
+            posy = random.randint(0, HEIGHT - 2*TILE_SIZE)
             hurdle = pygame.Rect(posx, posy, self.hurdle_size[0], self.hurdle_size[1])
 
             if hurdle.collidelist(hurdles) == -1: #søkte opp
                 hurdles.append(hurdle)
         return hurdles
         
-    def generate_enemy(self): 
+    def generate_enemy(self, projectiles): 
         spaceOccupied = True
         while spaceOccupied:
             posx = random.randint(0, WIDTH - TILE_SIZE)
             posy = random.randint(0, HEIGHT - TILE_SIZE)
-            lil_enemy = pygame.Rect(posx, posy, TILE_SIZE, TILE_SIZE)
+            lil_enemy = pygame.Rect(posx, posy, TILE_SIZE, TILE_SIZE) # Candidate for mole spawn
 
             if lil_enemy.collidelist(self.hurdles) != -1:
                 continue
@@ -45,7 +45,7 @@ class Garden():
                     spaceOccupied = True
                     break
 
-        self.moles.append(Mole(self, pygame.Rect(posx, posy, TILE_SIZE, TILE_SIZE), self.p1))
+        self.moles.append(Mole(self, pygame.Rect(posx, posy, TILE_SIZE, TILE_SIZE), self.p1, projectiles))
     
     def collide(self, lawn_mower): 
         return lawn_mower.rect.collidelist(self.hurdles)

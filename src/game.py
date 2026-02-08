@@ -25,7 +25,7 @@ def run(screen):
     p1 = Player()
     projectiles = []
     cut_grass = set()
-    
+
     garden = Garden(p1)
 
     score = 0
@@ -41,9 +41,6 @@ def run(screen):
     def draw_frame():
         garden.draw(screen)
 
-        for projectile in projectiles:
-            projectile.update(dt)
-            projectile.draw(screen)
 
         # Update grass
         for cut_grass_position in cut_grass:
@@ -51,6 +48,9 @@ def run(screen):
 
         
         p1.draw(direction, screen)
+        
+        for projectile in projectiles:
+            projectile.draw(screen)
 
         # hp bar
         hp_bar_width = 200
@@ -177,19 +177,24 @@ def run(screen):
                     running = False
 
         # Increase the timers on the moles
+        old_moles = set()
         for mole in garden.moles:
+            if mole.state == mole.ANGER:
+                old_moles.add(mole)
             mole.process(dt, p1)
 
         # Spawn moles
         chance_for_mole = random.randint(0, 100)
         if chance_for_mole == 0:
-            garden.generate_enemy()
+            garden.generate_enemy(projectiles)
 
 
         for cut_grass_position in old_cut_grass:
             cut_grass.remove(cut_grass_position)
 
-        # Slowly increase the amount of grass cut by increasing length
+        for mole in old_moles:
+            garden.moles.remove(mole)
+
         p1.length += 3
         
 

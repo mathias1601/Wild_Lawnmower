@@ -15,7 +15,7 @@ class Mole:
     DEFEAT = "defeat"
     ANGER = "anger"
     
-    def __init__(self, garden, rect, p1):
+    def __init__(self, garden, rect, p1, projectiles):
         self.garden = garden
         self.size = (TILE_SIZE, TILE_SIZE)
 
@@ -32,14 +32,12 @@ class Mole:
                     Mole.DEFEAT: dirt_destroyed,
                     Mole.ANGER: mole_angry}
         
-        self.projectile = []
+        self.projectile = projectiles
         self.state_trans = 0.0
         self.throw_time = 3.0
         self.threw = False
 
         self.p1 = p1
-
-
 
     def _load(self, img):
         s = pygame.image.load(img).convert_alpha()  
@@ -58,7 +56,7 @@ class Mole:
     def _throw_projectile(self, lawnmower_cx, lawnmower_cy):
         x,y = (lawnmower_cx - self.rect.centerx, lawnmower_cy - self.rect.centery)
         dist = max(0.01, (x*x + y*y) ** 0.5)
-        speed = 6 * TILE_SIZE
+        speed = 60
         vx = x/dist * speed
         vy = y/dist * speed
         snailshoe = Projectile(self.rect.centerx, self.rect.centery, vx, vy, self.garden)
@@ -95,15 +93,14 @@ class Mole:
 
         for p in self.projectile:
             p.update(dt)
-        self.projectile = [p for p in self.projectile if not p.is_offscreen()]
+        for i in range(len(self.projectile) - 1, -1, -1):
+            if self.projectile[i].is_offscreen():
+                del self.projectile[i]
 
     def draw(self, screen):
         img = self.img[self.state]
 
-        if self.p1.x + self.p1.size[0]//2 < self.rect.centerx:
+        if self.p1.x > self.rect.x:
             img = pygame.transform.flip(img, True, False)
 
         screen.blit(img, self.rect)
-
-        for p in self.projectile:
-            p.draw(screen)
