@@ -1,5 +1,4 @@
-""" Hovedprogrammet som skal kjøres """
-import sys
+""" Hovedprogrammet som skal kjores """
 import pygame
 
 from .options import *
@@ -61,6 +60,8 @@ def run(screen):
 
     # Game loop
     running = True
+    quit_requested = False
+    died = False
 
     while running:
         dt = clock.tick(FRAMERATE) / 1000
@@ -69,6 +70,7 @@ def run(screen):
         # Handle events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                quit_requested = True
                 running = False
 
 
@@ -106,6 +108,13 @@ def run(screen):
             last_move_pos = (p1.x, p1.y)
 
 
+        # Regenerate HP
+        if p1.hp < HP:
+            p1.hp += p1.regeneration_rate * dt
+            if p1.hp > HP:
+                p1.hp = HP
+
+
         # -----| Collisions |-----
         # damage proportional to overlap with cut grass
         old_cut_grass = set()
@@ -125,8 +134,12 @@ def run(screen):
                 damage = overlap_area / (p1.size[0] * p1.size[1]) * 20 * dt  # Max 20 damage per second
                 p1.hp -= damage
                 if p1.hp <= 0:
+                    died = True
+
+
+                    # Play death sound
+                    pygame.mixer.Sound("src/death.wav").play()
                     running = False
-                    # main menu
 
 
         for cut_grass_position in old_cut_grass:
@@ -136,10 +149,13 @@ def run(screen):
         # Update display
         draw_frame()
 
-    # Clean up
-    pygame.time.wait(2000)  # Wait for 2 seconds before quitting
-    pygame.quit()
-    sys.exit()
+    pygame.mixer.music.stop()
+
+    if quit_requested:
+        return "quit"
+    if died:
+        return "menu"
+    return "menu"
 
 
 if __name__ == "__main__":

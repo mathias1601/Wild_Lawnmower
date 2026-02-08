@@ -38,16 +38,13 @@ class MainMenu:
 
             self.screen.blit(self.background, (0, 0))
 
-            title_text = self.title_font.render("SNAKELER", True, BLACK)
-            title_rect = title_text.get_rect(center=(WIDTH // 2, int(HEIGHT * 0.2)))
-            self.screen.blit(title_text, title_rect)
-
             pygame.draw.rect(self.screen, BLACK, self.button_rect, border_radius=8)
             pygame.draw.rect(self.screen, WHITE, self.button_rect.inflate(-8, -8), border_radius=6)
 
             button_text = self.button_font.render("PLAY", True, BLACK)
             button_rect = button_text.get_rect(center=self.button_rect.center)
             self.screen.blit(button_text, button_rect)
+
 
             pygame.display.flip()
 

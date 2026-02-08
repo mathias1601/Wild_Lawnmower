@@ -13,6 +13,8 @@ class Player:
         self.image = pygame.transform.scale(ROCKET_IMAGE, self.size)
         self.speed = PLAYER_SPEED
 
+
+        self.regeneration_rate = REGENERATION_RATE
         self.hp = HP
 
     def draw(self, direction, screen):
