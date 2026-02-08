@@ -9,12 +9,14 @@ class Projectile:
         self.y = y
         self.vx = vx
         self.vy = vy
-        self.snailshoe = s = pygame.transform.smoothscale(pygame.image.load("sneilesko_u_bg.png").convert_alpha()) 
+        self.snailshoe =pygame.transform.smoothscale(pygame.image.load("sneilesko_u_bg.png").convert_alpha(),
+                                                     (TILE_SIZE, TILE_SIZE))
+
         self.rect = pygame.Rect(self.x, self.y, 1, 1)
 
-    def update(self):
-        self.x += self.vx
-        self.y += self.vy
+    def update(self, dt):
+        self.x += self.vx*dt
+        self.y += self.vy*dt
         self.rect.topleft = (int(self.x), int(self.y))
 
     def is_offscreen(self):
@@ -22,7 +24,7 @@ class Projectile:
                 self.rect.top < 0 or self.rect.bottom > HEIGHT // TILE_SIZE)
     
     def draw(self, screen):
-        pygame.draw.rect(screen, self.snailshoe, self.garden.transform(self.rect))
+        screen.blit(self.snailshoe, self.garden.transform(self.rect))
 
     def collides_with(self, lawn_mower_rect):
         return self.rect.colliderect(lawn_mower_rect)

@@ -51,28 +51,25 @@ class Mole():
         if next_state != self.state: 
             self.state = next_state
             self.state_trans = 0.0
+            if next_state == Mole.AGGRESSION:
+                self._thrown_this_state = False
 
     def check_collision(self, lawnmower):
         return self.rect.colliderect(lawnmower.rect)
 
     def _throw_projectile(self, lawnmower_cx, lawnmower_cy):
         x,y = (lawnmower_cx - self.rect.centerx, lawnmower_cy - self.rect.centery)
-        speed = 80
-        vx = x/FRAMERATE * speed
-        vy = y/FRAMERATE * speed
+        dist = max(0.01, (x*x + y*y) ** 0.5)
+        speed = 3.5
+        vx = x/dist * speed
+        vy = y/dist * speed
         snailshoe = Projectile(self.rect.centerx, self.rect.centery, vx, vy, self.garden)
-        self.projectiles.append(snailshoe)
-        return snailshoe
-
-    # def _throw_and_wait(self, lawnmower_rect, dt):
-    #     self.counter -= dt
-    #     if self.counter <= 0:
-    #         self._throw_projectile(lawnmower_rect.centerx, lawnmower_rect.centery)
-    #         self.counter = self.pause
+        self.projectile.append(snailshoe)
 
     def process(self, dt, limit, lawnmower): #repeatedly called in main
         self.state_trans += dt
         self.turn(lawnmower)  
+
         if(self.check_collision(lawnmower) and self.state not in (Mole.DEFEAT, Mole.ANGER)):
             self.next_state_logic(Mole.DEFEAT)
             self.state_trans = 0.0
@@ -92,27 +89,20 @@ class Mole():
         elif self.state == Mole.AGGRESSION: 
             self.throw_time = 3.0
             if len(self.projectile) < 2 and self.state_trans >= 0.5: #settling time
-                self._throw_projectile(self, lawnmower.rect.x, lawnmower.rect.y)
+                self._throw_projectile(lawnmower.rect.x, lawnmower.rect.y)
 
             if self.state_trans >= 1.5:
                 self.rounds -= 1
                 self.next_state_logic(Mole.WAKEY)
 
-            for p in self.projectiles:
+            for p in self.projectile:
                 p.update(dt)
-
-                    
-
-                self.projectiles = [p for p in self.projectiles if not p.is_offscreen()]
-
-            
-
-
+                self.projectile = [p for p in self.projectile if not p.is_offscreen()]
 
     def draw(self, screen):
         img = self.img[self.state]
         if not self.flip: 
-            pygame.transform.flip(img, True, False)
+            img = pygame.transform.flip(img, True, False)
         screen.blit(img, self.garden.transform(self.rect))
 
         for p in self.projectile:
