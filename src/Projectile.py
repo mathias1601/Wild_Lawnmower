@@ -23,8 +23,16 @@ class Projectile:
         return (self.rect.right < 0 or self.rect.left > WIDTH // TILE_SIZE or 
                 self.rect.top < 0 or self.rect.bottom > HEIGHT // TILE_SIZE)
     
+    def transform(self):
+        return pygame.Rect(
+            self.rect.left * TILE_SIZE,
+            self.rect.top * TILE_SIZE,
+            self.rect.width * TILE_SIZE,
+            self.rect.height * TILE_SIZE
+        )
+    
     def draw(self, screen):
-        screen.blit(self.snailshoe, self.garden.transform(self.rect))
+        screen.blit(self.snailshoe, self.transform())
 
     def collides_with(self, lawn_mower_rect):
         return self.rect.colliderect(lawn_mower_rect)

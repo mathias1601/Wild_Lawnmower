@@ -35,6 +35,7 @@ class Mole():
         self.projectile = []
         self.state_trans = 0.0
         self.throw_time = 3.0
+        self.threw = False
 
     def _load(self, img):
         s = pygame.image.load(img).convert_alpha()  
@@ -51,7 +52,7 @@ class Mole():
             self.state = next_state
             self.state_trans = 0.0
             if next_state == Mole.AGGRESSION:
-                self._thrown_this_state = False
+                self.threw = False
 
     def check_collision(self, lawnmower):
         return self.rect.colliderect(lawnmower.rect)
@@ -87,22 +88,30 @@ class Mole():
         
         elif self.state == Mole.AGGRESSION: 
             self.throw_time = 3.0
-            if len(self.projectile) < 2 and self.state_trans >= 0.5: #settling time
-                self._throw_projectile(lawnmower.rect.x, lawnmower.rect.y)
+            if self.threw == False and self.state_trans >= 0.5: #settling time
+                self._throw_projectile(lawnmower.rect.centerx, lawnmower.rect.centery)
+                self.threw = True
 
             if self.state_trans >= 1.5:
                 self.rounds -= 1
                 self.next_state_logic(Mole.WAKEY)
 
-            for p in self.projectile:
-                p.update(dt)
-                self.projectile = [p for p in self.projectile if not p.is_offscreen()]
+        for p in self.projectile:
+            p.update(dt)
+        self.projectile = [p for p in self.projectile if not p.is_offscreen()]
 
+    def transform(self, rect):
+        return pygame.Rect(
+            rect.left * TILE_SIZE,
+            rect.top * TILE_SIZE,
+            rect.width * TILE_SIZE,
+            rect.height * TILE_SIZE
+        )
     def draw(self, screen):
         img = self.img[self.state]
         if not self.flip: 
             img = pygame.transform.flip(img, True, False)
-        screen.blit(img, self.garden.transform(self.rect))
+        screen.blit(img, self.transform(self.rect))
 
         for p in self.projectile:
             p.draw(screen)
