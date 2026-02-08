@@ -1,11 +1,10 @@
 import pygame
 import random
-from Projectile import Projectile
-from Garden import Garden
-from assets.mole import * 
-from assets.dirt import destroyed, spawn_alert
 
-from options import *
+from .assets import * 
+
+from .options import *
+from src import Projectile
 
 #SNEGLESKOOOOOOO
 class Mole():
@@ -26,11 +25,11 @@ class Mole():
         self.state = Mole.IDLE
         self.rounds = 2
 
-        self.img = {Mole.IDLE: pygame.image.load("spawn_alert.png"), 
-                    Mole.WAKEY: pygame.image.load("mole.png"),
-                    Mole.AGGRESSION: pygame.image.load("throw.png"),
-                    Mole.DEFEAT: pygame.image.load("destroyed.png"),
-                    Mole.ANGER: pygame.image.load("angry.png")}
+        self.img = {Mole.IDLE: dirt_spawn_alert, 
+                    Mole.WAKEY: mole,
+                    Mole.AGGRESSION: mole_throw,
+                    Mole.DEFEAT: dirt_destroyed,
+                    Mole.ANGER: mole_angry}
 
         self.flip = True
         self.projectile = []

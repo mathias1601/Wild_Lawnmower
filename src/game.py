@@ -175,6 +175,10 @@ def run(screen):
                     DEATH_SOUND.play()
                     running = False
 
+        chance_for_mole = random.randint(0, 100)
+        if chance_for_mole == 0:
+            garden.generate_enemy()
+
 
         for cut_grass_position in old_cut_grass:
             cut_grass.remove(cut_grass_position)
