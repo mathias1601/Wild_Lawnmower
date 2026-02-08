@@ -24,8 +24,14 @@ mole_angry = pygame.image.load(path.join('assets', 'mole', 'angry.png')).convert
 mole = pygame.image.load(path.join('assets', 'mole', 'mole.png')).convert_alpha()
 mole_throw = pygame.image.load(path.join('assets', 'mole', 'throw.png')).convert_alpha()
 
+# mower
+MOWER_UP = pygame.image.load(path.join('assets', 'mower', 'up.PNG')).convert_alpha()
+MOWER_DOWN = pygame.image.load(path.join('assets', 'mower', 'down.PNG')).convert_alpha()
+MOWER_LEFT = pygame.image.load(path.join('assets', 'mower', 'left.PNG')).convert_alpha()
+MOWER_RIGHT = pygame.image.load(path.join('assets', 'mower', 'right.PNG')).convert_alpha()
+
 # sneilesko
-sneilesko_u_bg = pygame.image.load(path.join('assets', 'sneileskooo', 'sneilesko_u_bg.png')).convert_alpha()
+SNEILESKO = pygame.image.load(path.join('assets', 'sneileskooo', 'sneilesko_u_bg.png')).convert_alpha()
 
 
 # -----| FONT |-----
