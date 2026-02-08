@@ -7,7 +7,7 @@ from assets.dirt import destroyed, spawn_alert
 
 from options import *
 
-#SNEILESKOOOOOOO
+#SNEGLESKOOOOOOO
 class Mole():
     IDLE = "idle"
     WAKEY = "wakey"
@@ -15,11 +15,11 @@ class Mole():
     DEFEAT = "defeat"
     ANGER = "anger"
     
-    def __init__(self, garden):
+    def __init__(self, garden, rect):
         self.garden = garden
         self.size = (60,60)
 
-        self.rect = garden.generate_enemy()
+        self.rect = rect
 
         self.pause = 5 #seconds
         self.counter = 0
@@ -47,9 +47,6 @@ class Mole():
         else:
             self.flip = True
 
-    def collision_w_lawnmower(self, lawnmower):
-        return self.rect.colliderect(lawnmower.rect)
-
     def next_state_logic(self, next_state):
         if next_state != self.state: 
             self.state = next_state
@@ -76,7 +73,7 @@ class Mole():
     def process(self, dt, limit, lawnmower): #repeatedly called in main
         self.state_trans += dt
         self.turn(lawnmower)  
-        if(self.collision_w_lawnmower(lawnmower) and self.state not in (Mole.DEFEAT, Mole.ANGER)):
+        if(self.check_collision(lawnmower) and self.state not in (Mole.DEFEAT, Mole.ANGER)):
             self.next_state_logic(Mole.DEFEAT)
             self.state_trans = 0.0
 
@@ -87,7 +84,6 @@ class Mole():
             self.throw_time -= dt
             if self.throw_time <= 0 and self.rounds > 0:
                 self.next_state_logic(Mole.AGGRESSION)
-                self.rounds -= 1
 
         elif self.state == Mole.DEFEAT: 
             if self.state_trans >= 2: 
@@ -95,11 +91,19 @@ class Mole():
         
         elif self.state == Mole.AGGRESSION: 
             self.throw_time = 3.0
-            if len(self.projectile) < 2: 
+            if len(self.projectile) < 2 and self.state_trans >= 0.5: #settling time
                 self._throw_projectile(self, lawnmower.rect.x, lawnmower.rect.y)
-                
 
+            if self.state_trans >= 1.5:
+                self.rounds -= 1
+                self.next_state_logic(Mole.WAKEY)
 
+            for p in self.projectiles:
+                p.update(dt)
+
+                    
+
+                self.projectiles = [p for p in self.projectiles if not p.is_offscreen()]
 
             
 
