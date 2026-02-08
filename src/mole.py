@@ -1,10 +1,11 @@
 import pygame
 import random
 
+from .Projectile import Projectile
+
 from .assets import * 
 
 from .options import *
-from src import Projectile
 
 #SNEGLESKOOOOOOO
 class Mole():
@@ -42,9 +43,9 @@ class Mole():
 
     def turn(self, lawnmower):
         if lawnmower.rect.centerx < self.rect.centerx: 
-            self.flip = False
-        else:
             self.flip = True
+        else:
+            self.flip = False
 
     def next_state_logic(self, next_state):
         if next_state != self.state: 
@@ -59,13 +60,13 @@ class Mole():
     def _throw_projectile(self, lawnmower_cx, lawnmower_cy):
         x,y = (lawnmower_cx - self.rect.centerx, lawnmower_cy - self.rect.centery)
         dist = max(0.01, (x*x + y*y) ** 0.5)
-        speed = 3.5
+        speed = 6
         vx = x/dist * speed
         vy = y/dist * speed
         snailshoe = Projectile(self.rect.centerx, self.rect.centery, vx, vy, self.garden)
         self.projectile.append(snailshoe)
 
-    def process(self, dt, limit, lawnmower): #repeatedly called in main
+    def process(self, dt, lawnmower): #repeatedly called in main
         self.state_trans += dt
         self.turn(lawnmower)  
 

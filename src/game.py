@@ -175,6 +175,11 @@ def run(screen):
                     DEATH_SOUND.play()
                     running = False
 
+        # Increase the timers on the moles
+        for mole in garden.moles:
+            mole.process(dt, p1)
+
+        # Spawn moles
         chance_for_mole = random.randint(0, 100)
         if chance_for_mole == 0:
             garden.generate_enemy()

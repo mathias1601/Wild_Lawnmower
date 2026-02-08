@@ -1,6 +1,5 @@
 import pygame
 from .options import *
-from .Garden import Garden
 from .assets import SNEILESKO
 class Projectile:
     def __init__(self, x, y, vx, vy, garden):
@@ -9,7 +8,7 @@ class Projectile:
         self.y = y
         self.vx = vx
         self.vy = vy
-        self.snailshoe =pygame.transform.smoothscale(pygame.image.load("sneilesko_u_bg.png").convert_alpha(),
+        self.snailshoe =pygame.transform.smoothscale(SNEILESKO,
                                                      (TILE_SIZE, TILE_SIZE))
 
         self.rect = pygame.Rect(self.x, self.y, 1, 1)
