@@ -5,6 +5,7 @@ from .options import *
 
 
 class PauseMenu:
+
     def __init__(self, screen):
         self.screen = screen
         self.clock = pygame.time.Clock()
@@ -17,6 +18,8 @@ class PauseMenu:
 
         self.button_rect = pygame.Rect(0, 0, 240, 90)
         self.button_rect.center = (WIDTH // 2, int(HEIGHT * 0.7))
+
+        self.pause_overlay =  pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
 
     def run(self):
         running = True
@@ -32,12 +35,16 @@ class PauseMenu:
                     if event.key in (pygame.K_RETURN, pygame.K_SPACE):
                         return True
 
+            pygame.draw.rect(self.pause_overlay, TRANSPARENT_BLACK, (0, 0, WIDTH, HEIGHT))
             pygame.draw.rect(self.screen, BLACK, self.button_rect, border_radius=8)
             pygame.draw.rect(self.screen, WHITE, self.button_rect.inflate(-8, -8), border_radius=6)
+            
 
             button_text = self.button_font.render("PLAY", True, BLACK)
             button_rect = button_text.get_rect(center=self.button_rect.center)
+            self.screen.blit(self.pause_overlay, (0, 0))
             self.screen.blit(button_text, button_rect)
+            
 
 
             pygame.display.flip()

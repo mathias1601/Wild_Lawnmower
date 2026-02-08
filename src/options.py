@@ -12,6 +12,7 @@ GREEN = (0, 255, 0)
 BLACK = (0, 0, 0)
 DARK_GREEN = (0, 100, 0)
 PINK = (255, 192, 203)
+TRANSPARENT_BLACK = (70, 70, 70, 1)
 
 # ------ GAME OPTIONS ------
 
