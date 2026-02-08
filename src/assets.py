@@ -21,10 +21,8 @@ ROCK = pygame.image.load(path.join('assets', 'garden', 'rock.png')).convert()
 
 # mole
 mole_angry = pygame.image.load(path.join('assets', 'mole', 'angry.png')).convert_alpha()
-mole_l = pygame.image.load(path.join('assets', 'mole', 'mole_l.png')).convert_alpha()
-mole_r = pygame.image.load(path.join('assets', 'mole', 'mole_r.png')).convert_alpha()
-mole_throw_l = pygame.image.load(path.join('assets', 'mole', 'throw_l.png')).convert_alpha()
-mole_throw_r = pygame.image.load(path.join('assets', 'mole', 'throw_r.png')).convert_alpha()
+mole = pygame.image.load(path.join('assets', 'mole', 'mole.png')).convert_alpha()
+mole_throw = pygame.image.load(path.join('assets', 'mole', 'throw.png')).convert_alpha()
 
 # sneilesko
 sneilesko_u_bg = pygame.image.load(path.join('assets', 'sneileskooo', 'sneilesko_u_bg.png')).convert_alpha()
