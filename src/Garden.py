@@ -9,7 +9,7 @@ class Garden():
     def __init__(self):
         self.size = (60, 60)
         self.grid = TILE_SIZE
-        self.diff = 30
+        self.rock_count = ROCK_COUNT
         self.rowgrid = WIDTH // self.grid
         self.colgrid = HEIGHT // self.grid
         self.hurdle_image = HURDLE_IMAGE
@@ -21,9 +21,9 @@ class Garden():
     
     def _generate_hurdles(self):  #setup seq 
         hurdles = []
-        for _ in range(self.diff):
-            posx = random.randint(0, self.rowgrid - 1)
-            posy = random.randint(0, self.colgrid - 1)
+        for _ in range(self.rock_count):
+            posx = random.randint(1, self.rowgrid - 2)
+            posy = random.randint(1, self.colgrid - 2)
             hurdle = pygame.Rect(posx, posy, 1, 1) #Projectile klassen hjalp :^)
 
             if hurdle.collidelist(hurdles) == -1: #søkte opp
