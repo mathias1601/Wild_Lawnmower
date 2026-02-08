@@ -5,7 +5,7 @@ from .options import *
 
 
 def run(screen):
-    from .assets import BACKGROUND_IMAGE, FONT_TYPE, SOUNDTRACK
+    from .assets import SOUNDTRACK, DEATH_SOUND
     from .Player import Player
     from .Garden import Garden
     from .Projectile import Projectile
