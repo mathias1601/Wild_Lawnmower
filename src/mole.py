@@ -2,6 +2,8 @@ import pygame
 import random
 from Projectile import Projectile
 from Garden import Garden
+from assets.mole import * 
+from assets.dirt import destroyed, spawn_alert
 
 from options import *
 
@@ -16,9 +18,12 @@ class Mole():
         self.pause = 5 #seconds
         self.counter = 0
         self.mode = 0
-        self.peekabo = pygame.transform.scale(pygame.image.load("src/mole.png").convert_alpha(), self.size)
-        self.throw = pygame.transform.scale(pygame.image.load("src/mole_throw.png").convert_alpha(), self.size)
-        self.death = pygame.transform.scale(pygame.image.load("src/mole_dead.png").convert_alpha(), self.size)
+        self.spawn = pygame.transform.scale(pygame.image.load("spawn_alert.png").convert_alpha(), self.size)
+        self.peekabo = pygame.transform.scale(pygame.image.load("mole.png").convert_alpha(), self.size)
+        self.throw = pygame.transform.scale(pygame.image.load("throw.png").convert_alpha(), self.size)
+        self.crushed = pygame.transform.scale(pygame.image.load("destroyed.png").convert_alpha(), self.size)
+        self.angry = pygame.transform.scale(pygame.image.load("angry.png").convert_alpha(), self.size)
+        self.active = self.spawn
         self.projectile = []
 
     def _throw_projectile(self, lawnmower_cx, lawnmower_cy):
@@ -35,13 +40,20 @@ class Mole():
             self._throw_projectile(lawnmower_rect.centerx, lawnmower_rect.centery)
             self.counter = self.pause
 
+    def turn(self, lawnmower):
+        if lawnmower.rect.left < self.rect.centerx: 
+            pygame.transform.flip()
+
     def collision_w_lawnmower(self, lawnmower):
         return self.rect.colliderect(lawnmower)
 
     def draw(self, screen):
         if self.mode == 0: 
-            screen.blit(self.peekabo, self.garden.transform(self.rect))
+            self.active = self.spawn
+            self.mode = 1
         elif self.mode == 1: 
-            screen.blit(self.throw, self.garden.transform(self.rect))
+            self.active = self.peekabo
+            self.mode = 1
         elif self.mode == 2: 
-            screen.blit(self.death, self.garden.transform(self.rect))
+            self.active = self.throw
+            screen.blit(self.active, self.garden.transform(self.rect))
