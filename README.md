@@ -1,3 +1,5 @@
+![image](assets/main_menu.png)
+
 # Snakeler
 
 Lagd under IFI Game Jam 2026
@@ -28,4 +30,3 @@ python main.py
 - Du er en gressklipper som prøver å klippe alt gresset
 - Du kan ikke kjøre over klippet gress
 - gresset gror etter deg, men du får bedre og bedre gressklipper som gjør at det gror tilbake saktere
-- Når stor nok prosent av arealet er klippet kan man gå videre til neste område/bane
