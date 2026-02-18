@@ -2,20 +2,20 @@ import pygame
 from .options import *
 from .assets import SNEILESKO
 class Projectile:
-    def __init__(self, x, y, vx, vy, garden):
+    def __init__(self, x, y, direction, garden):
         self.garden = garden
         self.x = x
         self.y = y
-        self.vx = vx
-        self.vy = vy
+        self.direction = direction.normalize() if direction.length() > 0 else pygame.Vector2(0, 0)
+        self.speed = BULLET_SPEED
         self.snailshoe =pygame.transform.smoothscale(SNEILESKO,
                                                      (TILE_SIZE, TILE_SIZE))
 
         self.rect = pygame.Rect(self.x, self.y, self.snailshoe.get_width(), self.snailshoe.get_height())
 
     def update(self, dt):
-        self.x += self.vx*dt
-        self.y += self.vy*dt
+        self.x += self.direction.x * self.speed * dt
+        self.y += self.direction.y * self.speed * dt
         self.rect.topleft = (int(self.x), int(self.y))
 
     def is_offscreen(self):

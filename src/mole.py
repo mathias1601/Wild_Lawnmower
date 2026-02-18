@@ -32,7 +32,7 @@ class Mole:
                     Mole.DEFEAT: dirt_destroyed,
                     Mole.ANGER: mole_angry}
         
-        self.projectile = projectiles
+        self.projectiles = projectiles
         self.state_trans = 0.0
         self.throw_time = 3.0
         self.threw = False
@@ -44,7 +44,7 @@ class Mole:
         return pygame.transform.smoothscale(s, self.size)
 
     def next_state_logic(self, next_state):
-        if next_state != self.state: 
+        if next_state != self.state:
             self.state = next_state
             self.state_trans = 0.0
             if next_state == Mole.AGGRESSION:
@@ -54,13 +54,9 @@ class Mole:
         return self.rect.colliderect(lawnmower.rect)
 
     def _throw_projectile(self, lawnmower_cx, lawnmower_cy):
-        x,y = (lawnmower_cx - self.rect.centerx, lawnmower_cy - self.rect.centery)
-        dist = max(0.01, (x*x + y*y) ** 0.5)
-        speed = 60
-        vx = x/dist * speed
-        vy = y/dist * speed
-        snailshoe = Projectile(self.rect.centerx, self.rect.centery, vx, vy, self.garden)
-        self.projectile.append(snailshoe)
+        direction = pygame.Vector2(lawnmower_cx - self.rect.centerx, lawnmower_cy - self.rect.centery)
+        snailshoe = Projectile(self.rect.centerx, self.rect.centery, direction, self.garden)
+        self.projectiles.append(snailshoe)
 
     def process(self, dt, lawnmower): #repeatedly called in main
         self.state_trans += dt
@@ -90,12 +86,6 @@ class Mole:
             if self.state_trans >= 1.5:
                 self.rounds -= 1
                 self.next_state_logic(Mole.WAKEY)
-
-        for p in self.projectile:
-            p.update(dt)
-        for i in range(len(self.projectile) - 1, -1, -1):
-            if self.projectile[i].is_offscreen():
-                del self.projectile[i]
 
     def draw(self, screen):
         img = self.img[self.state]

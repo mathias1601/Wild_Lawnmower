@@ -119,6 +119,9 @@ def run(screen):
         # Move player
 
         # Move X
+        if p1.speed < PLAYER_MAX_SPEED:
+            p1.speed += 5 * dt
+        
         p1.x += direction.x * p1.speed * dt
         p1.rect.topleft = (p1.x, p1.y)
 
@@ -159,7 +162,7 @@ def run(screen):
             if current_time - cut_grass_position[2] > p1.length:  # Grass regrows after 5 seconds
                 old_cut_grass.add(cut_grass_position)
                 continue
-            if current_time - cut_grass_position[2] < 300:  # skip damage for 1 second after cutting
+            if current_time - cut_grass_position[2] < 1000-p1.speed:  # skip damage for x seconds after cutting
                 continue
 
             grass_rect = pygame.Rect(cut_grass_position[0], cut_grass_position[1], TILE_SIZE, TILE_SIZE)
@@ -175,6 +178,24 @@ def run(screen):
                     # Play death sound
                     DEATH_SOUND.play()
                     running = False
+
+        # Projectiles
+        for i in range(len(projectiles) - 1, -1, -1):
+            projectiles[i].speed = BULLET_SPEED + p1.speed
+            projectiles[i].update(dt)
+            if projectiles[i].is_offscreen():
+                del projectiles[i]
+                continue
+
+            if projectiles[i].collides_with(p1.rect):
+                p1.hp -= 20
+                DAMAGE_SOUND.play()
+                del projectiles[i]
+                if p1.hp <= 0:
+                    died = True
+                    DEATH_SOUND.play()
+                    running = False
+                    break
 
         # Increase the timers on the moles
         old_moles = set()
