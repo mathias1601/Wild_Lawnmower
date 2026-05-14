@@ -1,11 +1,10 @@
 ![image](assets/main_menu.png)
 
-# Snakeler
+# Wild Lawnmower
 
 Lagd under IFI Game Jam 2026
 
 [gamejam.cyb.no](https://gamejam.cyb.no)
-
 
 
 Gruppemedlemmer:
@@ -21,12 +20,11 @@ Controlls: WASD
 Command to run:
 
 ```
-pip install -r reqirements.txt
-python main.py
+uv run main.py
 ```
 
 ## Beskrivelse av spillet
 
 - Du er en gressklipper som prøver å klippe alt gresset
 - Du kan ikke kjøre over klippet gress
-- gresset gror etter deg, men du får bedre og bedre gressklipper som gjør at det gror tilbake saktere
+- gresset gror etter deg, men du får bedre og bedre gressklipper som kjører fortere og klipper mer gress
